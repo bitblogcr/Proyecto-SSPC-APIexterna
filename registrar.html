@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="la">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="SSPC-TAREA" content="">
+    <title>API WA</title>
+ 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js" crossorigin="anonymous"></script>
+ 
+    <link href="css/styles.css" rel="stylesheet">
+ 
+    <link rel="stylesheet" href="css/heading.css">
+    <link rel="stylesheet" href="css/body.css"> 
+
+
+// Estilos sencillos para un form
+
+<style>
+        body {
+            background-color: #cce5ff; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+
+        form {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+          input[type="text"] {
+            background-color: transparent;
+            border: none;
+            border-bottom: 1px solid black; 
+            padding: 5px;
+            outline: none;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        input[type="submit"] {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+// Se coloca el form
+
+<body id="pagina">
+
+     <section class="formulario">
+        <div class="container"><big class="pre-wrap">    
+          <h2>Colocar su número para estar en contacto</h2>
+        <form id="formulario" action="enviar.php" method="POST" onsubmit="submitForm(event)">
+        <label for="numero">Coloque su número de WhatsApp:</label><br>
+        <input type="text" id="numero" name="numeral" pattern="\506\d{8}" title="Por favor ingrese un número con el formato 506xxxxxxxx" required><br><br>
+        <input type="submit" value="- Deseo recibir información por WhatsApp -">
+        <br><br>
+    
+    </form>
+
+        </big></div>
+    </section>
+
+
+   
+
+    <script src="js/scripts.js"></script>
+
+    <script>
+        function submitForm(event) {
+            event.preventDefault(); // Espera a que se introduzca la informaición
+
+            var numeral = document.getElementById("numero").value;
+
+            // Por seguridad las credenciales se captan desde otro archivo PHP 
+
+            <?php include_once 'config.php'; ?>
+            
+            // Esquema de API para cURL que documenta Twilio 
+            // Sustituir por platilla o mensaje que se desea enviar
+
+            var curlCommand = 'curl -X POST "https://api.twilio.com/2010-04-01/Accounts/<?php echo TWILIO_ACCOUNT_SID; ?>/Messages.json" \
+                                --data-urlencode "From=whatsapp:+14155238886" \
+                                --data-urlencode "Body=Somos Bitblog CR, le invitamos a visitar el sitio WEB para conocer nuestros servicios." \
+                                --data-urlencode "To=whatsapp:numeral'" \
+                                -u <?php echo TWILIO_ACCOUNT_SID; ?>:<?php echo TWILIO_AUTH_TOKEN; ?>';
+
+            // Activar el comando cURL para no depender de otro archivo
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "submit-curl.php", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.send("curlCommand=" + encodeURIComponent(curlCommand));
+        }
+    </script>
+    
+</body>
